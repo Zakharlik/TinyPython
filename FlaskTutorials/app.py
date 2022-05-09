@@ -4,7 +4,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-## app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False ## FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False ## FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
 db = SQLAlchemy(app)
 
 class Article(db.Model):
@@ -27,10 +27,11 @@ def index():
 def about():
     return render_template("about.html")
 
-@app.route('/user/<string:name>/<int:id>')
-def user(name, id):
-    return 'User '+ name +' has id ' + str(id)
-    
+@app.route('/create-article')
+def create_article():
+    return render_template("create-article.html")
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     
