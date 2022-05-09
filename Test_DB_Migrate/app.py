@@ -14,6 +14,7 @@ class dev_types(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime)
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
