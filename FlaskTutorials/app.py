@@ -48,6 +48,26 @@ def post_delete(id):
     except Exception as e:
         return "Ошибка удаления из БД: " + str(e)
 
+@app.route('/posts/<int:id>/update', methods=['POST', 'GET'])
+def post_update(id):
+    article = Article.query.get_or_404(id)
+    if request.method == 'POST':
+        article.title = request.form['title']
+        article.intro = request.form['intro']
+        article.text = request.form['text']
+
+        try:
+            db.session.commit()
+            return redirect('/posts')
+        except Exception as e:
+            return "Ошибка записи в БД: " + str(e)
+    else:
+        return render_template("post-update.html", article=article)
+
+
+
+
+
 @app.route('/create-article', methods=['POST', 'GET'])
 def create_article():
     if request.method == 'POST':
