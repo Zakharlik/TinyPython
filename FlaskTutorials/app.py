@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, request, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -11,7 +11,7 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     intro = db.Column(db.String(300), nullable=False)
-    test = db.Column(db.Text, nullable=False)
+    text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -27,9 +27,23 @@ def index():
 def about():
     return render_template("about.html")
 
-@app.route('/create-article')
+@app.route('/create-article', methods=['POST', 'GET'])
 def create_article():
-    return render_template("create-article.html")
+    if request.method == 'POST':
+        title = request.form['title']
+        intro = request.form['intro']
+        text = request.form['text']
+
+        article = Article(title=title, intro=intro, text=text)
+
+        try:
+            db.session.add(article)
+            db.session.commit()
+            return redirect('/')
+        except Exception as e:
+            return "Ошибка записи в БД: " + str(e)
+    else:
+        return render_template("create-article.html")
 
 
 if __name__ == '__main__':
