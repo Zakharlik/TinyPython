@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ article.title }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ article.title }}</h1>
+    <div class="alert alert-info">
+        <p>{{ article.intro }}</p>
+        <p>{{ article.text }}</p>
+        <p>{{ article.date.date() }}</p>
+        <p><a href="/posts/{{ article.id + 1 }}" class="btn btn-warning">Дальше</a></p>
+    </div>
+{% endblock %}
