@@ -45,16 +45,21 @@ def add_container_type():
     cont_types = container_types.query.order_by(container_types.title).all()
     if request.method == 'POST':
         title = request.form['title']
-        if title in cont_types:
-            return 'Такой контейнер уже есть!'
-        else:
+        is_present = False
+        for el in cont_types:
+            if title == str(el.title):
+                is_present = True
+                return 'Такой контейнер уже есть!'
+            else:
+                is_present = False
+        if is_present:
             cont_type = container_types(title=title)
-        try:
-            db.session.add(cont_type)
-            db.session.commit()
-            return redirect('/add-container-type')
-        except Exception as e:
-            return "Ошибка записи в БД: " + str(e)
+            try:
+                db.session.add(cont_type)
+                db.session.commit()
+                return redirect('/add-container-type')
+            except Exception as e:
+                return "Ошибка записи в БД: " + str(e)
 
     return render_template('add-container-type.html', cont_types=cont_types)
 
