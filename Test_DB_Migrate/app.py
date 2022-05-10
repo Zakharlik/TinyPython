@@ -41,6 +41,34 @@ def add_container_type():
     return render_template('add-container-type.html', cont_types=cont_types)
 
 
+@app.route('/add/<string:table_name>', methods=['POST', 'GET'])
+def add_any_row(table_name):
+    '''
+    Admin page for maintenance any table by hand
+    '''
+    table_rows = globals()[table_name].query.order_by(globals()[table_name].title).all()
+    table_columns = tables[table_name]
+    if request.method == 'POST':
+        title = request.form['title']
+        is_present = False
+        for el in table_rows:
+            if title == str(el.title):
+                is_present = True
+                return 'Такая запись уже есть!'
+        if not is_present:
+            new_els = {key: request.form[key] for key in table_columns}
+            new_row = globals()[table_name](**new_els)  # Как сюда запихать список полей?
+            try:
+                db.session.add(new_row)
+                db.session.commit()
+                return redirect(f'/add/{table_name}')
+            except Exception as e:
+                return "Ошибка записи в БД: " + str(e)
+
+#    return render_template(f'add/{table_name}.html', cont_types=cont_types)
+    return render_template('add/row.html', table_rows=table_rows, table_columns=table_columns, table_name=table_name)
+
+
 def make_table_list():
     '''
     Make list of usefull columns in dict of tables.
@@ -62,5 +90,6 @@ def make_table_list():
 
 
 if __name__ == '__main__':
+    tables = make_table_list()
     print(make_table_list())    
     app.run(debug=True)
