@@ -42,28 +42,23 @@ def add_container_type():
 
 
 def make_table_list():
+    '''
+    Make list of usefull columns in dict of tables.
+    Some unusefull columns, such as 'id' and 'creation_date', excluded.
+    '''
+
+    unuseful = ('id', 'creation_date') # Tuple of unuseful collumns
     result ={}
-    classes = [(cls_name, cls_obj) for cls_name, cls_obj in inspect.getmembers(sys.modules['db_classes']) if inspect.isclass(cls_obj)]
-    classes_obj = [cls_obj for cls_name, cls_obj in inspect.getmembers(sys.modules['db_classes']) if inspect.isclass(cls_obj)]
+    classes = [(cls_name, cls_obj) for cls_name, cls_obj in inspect.getmembers(sys.modules['db_classes']) if inspect.isclass(cls_obj)] # List of all classes
 
     for db_class in classes:
-        print(db_class[0])
         attributes = []
         for cl in inspect.getmembers(db_class[1]):
-            if ('attributes' in str(type(cl[1]))) and (cl[0] not in ('id', 'creation_date')):
+            if ('attributes' in str(type(cl[1]))) and (cl[0] not in unuseful): # 'attributes' - property of SQLAlchemy collumns
                 attributes.append(cl[0])
-                print(cl[0], '---', type(cl[1]))
-                pass
-        if attributes:
+        if attributes: # Need for exclude datetime class
             result[db_class[0]] = attributes
     return result        
-
- #       print(type(dir(clas)[0]))
- #       for met in dir(clas):
- #           if '^_' not in met:
- #               print(met)
- #               methods_list = (met for met in dir(clas) if '__' not in met)
- #       print(clas, ' has members: ', methods_list)
 
 
 if __name__ == '__main__':
