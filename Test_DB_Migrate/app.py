@@ -17,6 +17,7 @@ migrate = Migrate(app, db)
 def index():
     return render_template('index.html')
 
+
 @app.route('/add-container-type', methods=['POST', 'GET'])
 def add_container_type():
     cont_types = container_types.query.order_by(container_types.title).all()
@@ -43,9 +44,9 @@ def add_container_type():
 
 @app.route('/add/<string:table_name>', methods=['POST', 'GET'])
 def add_any_row(table_name):
-    '''
+    """
     Admin page for maintenance any table by hand
-    '''
+    """
     table_rows = globals()[table_name].query.order_by(globals()[table_name].title).all()
     table_columns = tables[table_name]
     if request.method == 'POST':
@@ -70,21 +71,23 @@ def add_any_row(table_name):
 
 
 def make_table_list():
-    '''
-    Make list of usefull columns in dict of tables.
-    Some unusefull columns, such as 'id' and 'creation_date', excluded.
-    '''
+    """
+    Make list of useful columns in dict of tables.
+    Some unuseful columns, such as 'id' and 'creation_date', excluded.
+    """
 
-    unuseful = ('id', 'creation_date') # Tuple of unuseful collumns
-    result ={}
-    classes = [(cls_name, cls_obj) for cls_name, cls_obj in inspect.getmembers(sys.modules['db_classes']) if inspect.isclass(cls_obj)] # List of all classes
+    unuseful = ('id', 'creation_date')  # Tuple of unuseful columns
+    result = {}
+    classes = [(cls_name, cls_obj) for cls_name, cls_obj in inspect.getmembers(sys.modules['db_classes'])
+               if inspect.isclass(cls_obj)]  # List of all classes
 
     for db_class in classes:
         attributes = []
         for cl in inspect.getmembers(db_class[1]):
-            if ('attributes' in str(type(cl[1]))) and (cl[0] not in unuseful): # 'attributes' - property of SQLAlchemy collumns
+            if ('attributes' in str(type(cl[1]))) and (cl[0] not in unuseful):
+                # 'attributes' - property of SQLAlchemy columns
                 attributes.append(cl[0])
-        if attributes: # Need for exclude datetime class
+        if attributes:  # Need for exclude datetime class
             result[db_class[0]] = attributes
     return result        
 
@@ -93,3 +96,4 @@ if __name__ == '__main__':
     tables = make_table_list()
     print(make_table_list())    
     app.run(debug=True)
+    
