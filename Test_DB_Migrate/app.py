@@ -26,7 +26,7 @@ def add_container_type():
         is_present = False
         for el in cont_types:
             if title == str(el.title):
-                is_present = True
+                # is_present = True
                 return 'Такой контейнер уже есть!'
             else:
                 is_present = False
@@ -54,7 +54,7 @@ def add_any_row(table_name):
         is_present = False
         for el in table_rows:
             if title == str(el.title):
-                is_present = True
+                # is_present = True
                 return 'Такая запись уже есть!'
         if not is_present:
             new_els = {key: request.form[key] for key in table_columns}
@@ -96,4 +96,3 @@ if __name__ == '__main__':
     tables = make_table_list()
     print(make_table_list())    
     app.run(debug=True)
-    
